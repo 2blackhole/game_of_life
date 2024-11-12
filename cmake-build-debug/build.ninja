@@ -55,6 +55,12 @@ build CMakeFiles/game_of_life.dir/main.c.obj: C_COMPILER__game_of_life_unscanned
   OBJECT_DIR = CMakeFiles\game_of_life.dir
   OBJECT_FILE_DIR = CMakeFiles\game_of_life.dir
 
+build CMakeFiles/game_of_life.dir/logic.c.obj: C_COMPILER__game_of_life_unscanned_Debug C$:/banana_code/game_of_life/logic.c || cmake_object_order_depends_target_game_of_life
+  DEP_FILE = CMakeFiles\game_of_life.dir\logic.c.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\game_of_life.dir
+  OBJECT_FILE_DIR = CMakeFiles\game_of_life.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target game_of_life
@@ -63,7 +69,7 @@ build CMakeFiles/game_of_life.dir/main.c.obj: C_COMPILER__game_of_life_unscanned
 #############################################
 # Link the executable game_of_life.exe
 
-build game_of_life.exe: C_EXECUTABLE_LINKER__game_of_life_Debug CMakeFiles/game_of_life.dir/main.c.obj
+build game_of_life.exe: C_EXECUTABLE_LINKER__game_of_life_Debug CMakeFiles/game_of_life.dir/main.c.obj CMakeFiles/game_of_life.dir/logic.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\game_of_life.dir

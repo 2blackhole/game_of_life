@@ -4,5 +4,8 @@ project(game_of_life)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(game_of_life main.c
-                            logic.h)
+                            logic.h
+                            constants.h
+                            logic.c)
+
 set(CMAKE_INCLUDE_CURRENT_DIR)

@@ -1,9 +1,11 @@
 
 #include <windows.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <tchar.h>
 #include "logic.h"
+#include "constants.h"
 
 // Global variables
 
@@ -71,7 +73,7 @@ int WINAPI WinMain(
       szTitle,
       WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, CW_USEDEFAULT,
-      500, 100,
+      SCREEN_WIDTH, SCREEN_HEIGHT,
       NULL,
       NULL,
       hInstance,
@@ -116,20 +118,67 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
    PAINTSTRUCT ps;
    HDC hdc;
-   TCHAR greeting[] = _T("sosite tvari");
+
+   int ** grid = init_grid(GRID_X, GRID_Y);
+
+   grid[20][20] = 1;
+   grid[21][20] = 1;
+   grid[19][20] = 1;
+   grid[20][19] = 1;
+   grid[20][18] = 1;
+   grid[20][17] = 1;
+
+   printf("banana\n");
+
 
    switch (message)
    {
    case WM_PAINT:
       hdc = BeginPaint(hWnd, &ps);
 
-      // Here your application is laid out.
-      // For this introduction, we just print out "Hello, Windows desktop!"
-      // in the top left corner.
-      TextOut(hdc,
-         5, 5,
-         greeting, _tcslen(greeting));
-      // End application-specific layout section.
+      HPEN hPen = CreatePen(PS_SOLID, 1, RGB(69, 69, 69));
+      HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
+
+      HBRUSH hBGBrush = CreateSolidBrush(RGB(0, 0, 0));
+      RECT clientRect;
+      GetClientRect(hWnd, &clientRect);
+      FillRect(hdc, &clientRect, hBGBrush);
+      DeleteObject(hBGBrush);
+
+
+
+      //Отрисовка клеток
+      for(int x = 0; x < GRID_X; x++) {
+         for(int y = 0; y < GRID_Y; y++) {
+            if (grid[x][y]) {
+               RECT cellRect = { x * CELL_SIZE, y * CELL_SIZE, (x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE };
+               HBRUSH hBrush = CreateSolidBrush(RGB(138, 43, 226));
+               FillRect(hdc, &cellRect, hBrush);
+               DeleteObject(hBrush);
+            }
+         }
+      }
+      //Отрисовка клеток конец
+
+      //сетка
+      for(int x = 0; x <= SCREEN_WIDTH; x += CELL_SIZE) {
+         MoveToEx(hdc, x, 0, NULL);
+         LineTo(hdc, x, SCREEN_HEIGHT);
+      }
+
+      for(int y = 0; y <= SCREEN_HEIGHT; y += CELL_SIZE) {
+         MoveToEx(hdc, 0, y, NULL);
+         LineTo(hdc, SCREEN_WIDTH, y);
+      }
+      //сетка конец
+
+      SelectObject(hdc, hOldPen);
+      DeleteObject(hPen);
+      //комент норм
+      // TextOut(hdc,
+      //    5, 5,
+      //    greeting, _tcslen(greeting));
+      //комент норм конец
 
       EndPaint(hWnd, &ps);
       break;
@@ -141,5 +190,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
       break;
    }
 
+
+   free_grid(grid);
    return 0;
 }
