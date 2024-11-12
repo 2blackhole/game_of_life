@@ -1,0 +1,6 @@
+# ninja log v6
+23	959	7531164094516451	CMakeFiles/game_of_life.dir/main.c.obj	2edd8d15b40b56db
+960	1173	7531164103882002	game_of_life.exe	5c90da83885e782d
+42	541	7531385054348977	build.ninja	8ab9a0a66ef97a1b
+25	1586	7531385112445845	CMakeFiles/game_of_life.dir/main.c.obj	2edd8d15b40b56db
+1587	1828	7531385128054892	game_of_life.exe	5c90da83885e782d
