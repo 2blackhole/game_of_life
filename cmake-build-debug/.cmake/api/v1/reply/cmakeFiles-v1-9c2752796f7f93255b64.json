@@ -154,8 +154,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "C:/banana_code/game_of_life/cmake-build-debug",
-		"source" : "C:/banana_code/game_of_life"
+		"build" : "C:/Users/user/CLionProjects/game_of_life/cmake-build-debug",
+		"source" : "C:/Users/user/CLionProjects/game_of_life"
 	},
 	"version" : 
 	{

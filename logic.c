@@ -1,16 +1,14 @@
-#include "logic.h"
-
-#include <stdlib.h>
 #include <stdio.h>
 #include <windows.h>
 
+#include "logic.h"
 #include "constants.h"
 
 void render(int *grid) {
    int newGrid[GRID_X][GRID_Y];
 
-   for (int y = 0; y < GRID_X; ++y) {
-      for (int x = 0; x < GRID_Y; ++x) {
+   for (int y = 0; y < GRID_Y; ++y) {
+      for (int x = 0; x < GRID_X; ++x) {
          int aliveNeighbors = 0;
 
          for (int i = -1; i <= 1; ++i) {
@@ -19,24 +17,24 @@ void render(int *grid) {
                int newX = x + j;
                int newY = y + i;
                if (newX >= 0 && newX < GRID_X && newY >= 0 && newY < GRID_Y) {
-                  if (grid[newX * GRID_Y + newY]) {
+                  if (grid[newY * GRID_X + newX]) {
                      ++aliveNeighbors;
                   }
                }
             }
          }
 
-         if (grid[x * GRID_Y + y]) {
+         if (grid[y * GRID_X + x]) {
             if (aliveNeighbors == 2 || aliveNeighbors == 3) {
                newGrid[y][x] = 1;
             } else {
-               newGrid[y][x] = 1;
+               newGrid[y][x] = 0;
             }
          } else {
             if (aliveNeighbors == 3) {
                newGrid[y][x] = 1;
             } else {
-               newGrid[y][x] = 1;
+               newGrid[y][x] = 0;
             }
          }
       }
@@ -44,12 +42,13 @@ void render(int *grid) {
 
    for (int y = 0; y < GRID_Y; ++y) {
       for (int x = 0; x < GRID_X; ++x) {
-         grid[x * GRID_Y + y] = newGrid[y][x];
+         grid[y * GRID_X + x] = newGrid[y][x];
       }
    }
 }
 
-void draw(const int * grid, HDC * hdc) {
+
+void draw(const int * grid, const HDC * hdc) {
    for(int y = 0; y < GRID_X; y++) {
       for(int x = 0; x < GRID_Y; x++) {
          if (grid[x * GRID_Y + y]) {

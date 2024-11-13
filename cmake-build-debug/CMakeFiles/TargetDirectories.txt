@@ -1,3 +1,3 @@
-C:/banana_code/game_of_life/cmake-build-debug/CMakeFiles/game_of_life.dir
-C:/banana_code/game_of_life/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/banana_code/game_of_life/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/user/CLionProjects/game_of_life/cmake-build-debug/CMakeFiles/game_of_life.dir
+C:/Users/user/CLionProjects/game_of_life/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/user/CLionProjects/game_of_life/cmake-build-debug/CMakeFiles/rebuild_cache.dir

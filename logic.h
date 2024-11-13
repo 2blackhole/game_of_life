@@ -1,7 +1,6 @@
 #pragma once
-#include "constants.h"
-#include <windows.h>
 
+#include <windows.h>
 
 typedef enum {
    DEAD = 0,
@@ -16,6 +15,6 @@ typedef enum {
 
 void render(int * grid);
 
-void draw(const int * grid, HDC * hdc);
+void draw(const int * grid, const HDC * hdc);
 
 void game_input(game_state * g_state, HWND hwnd);
