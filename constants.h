@@ -2,6 +2,9 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
+//60 fps
+#define TARGET_MICROSECONDS_PER_FRAME		16667ULL
+
 
 #define CELL_SIZE 20
 

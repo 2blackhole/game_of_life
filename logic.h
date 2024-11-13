@@ -1,12 +1,21 @@
 #pragma once
 #include "constants.h"
+#include <windows.h>
 
-int game_loop();
 
-int render();
+typedef enum {
+   DEAD = 0,
+   ALIVE = 1
+} Cell;
 
-int draw(int ** grid);
+typedef enum {
+   END_PLS = 0,
+   INSERT_MODE = 1,
+   RUNNING_MODE = 2
+} game_state;
 
-int ** init_grid(int width, int height);
+void render(int * grid);
 
-void free_grid(int ** grid);
+void draw(const int * grid, HDC * hdc);
+
+void game_input(game_state * g_state, HWND hwnd);

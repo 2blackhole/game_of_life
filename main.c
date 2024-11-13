@@ -1,4 +1,5 @@
 
+#include <stdint.h>
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,6 +9,8 @@
 #include "constants.h"
 
 // Global variables
+int grid[GRID_X][GRID_Y] = {0};
+game_state g_state = INSERT_MODE;
 
 // The main window class name.
 static TCHAR szWindowClass[] = _T("DesktopApp");
@@ -99,11 +102,31 @@ int WINAPI WinMain(
 
    // Main message loop:
    MSG msg;
-   while (GetMessage(&msg, NULL, 0, 0))
-   {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
+
+
+   int64_t frame_start = 0;
+   int64_t frame_end = 0;
+   int64_t accumulator = 0;
+
+   while (g_state != END_PLS) {
+
+      //QueryPerformanceCounter((LARGE_INTEGER*)&frame_start);
+      while (PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
+         DispatchMessage(&msg);
+         TranslateMessage(&msg);
+      }
+
+      //ввод с клавиатуры, рендер игры
+      game_input(&g_state, hWnd);
+
+      if (g_state == RUNNING_MODE) {
+         Sleep(200);
+         render(grid);
+      }
+
    }
+
+
 
    return (int) msg.wParam;
 }
@@ -118,22 +141,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
    PAINTSTRUCT ps;
    HDC hdc;
-
-   int ** grid = init_grid(GRID_X, GRID_Y);
-
-   grid[20][20] = 1;
-   grid[21][20] = 1;
-   grid[19][20] = 1;
-   grid[20][19] = 1;
-   grid[20][18] = 1;
-   grid[20][17] = 1;
-
-   printf("banana\n");
-
-
-   switch (message)
-   {
-   case WM_PAINT:
+   
+   switch (message) {
+      case WM_LBUTTONDOWN:
+         if (g_state != INSERT_MODE) {break;}
+         int x = LOWORD(lParam) / CELL_SIZE;
+         int y = HIWORD(lParam) / CELL_SIZE;
+         if (x >= 0 && x < GRID_X && y >= 0 && y < GRID_Y) {
+            grid[x][y] = !grid[x][y]; //переключение состояния
+            InvalidateRect(hWnd, NULL, FALSE);
+         }
+      case WM_PAINT:
       hdc = BeginPaint(hWnd, &ps);
 
       HPEN hPen = CreatePen(PS_SOLID, 1, RGB(69, 69, 69));
@@ -146,51 +164,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
       DeleteObject(hBGBrush);
 
 
+      draw(grid, &hdc);
 
-      //Отрисовка клеток
-      for(int x = 0; x < GRID_X; x++) {
-         for(int y = 0; y < GRID_Y; y++) {
-            if (grid[x][y]) {
-               RECT cellRect = { x * CELL_SIZE, y * CELL_SIZE, (x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE };
-               HBRUSH hBrush = CreateSolidBrush(RGB(138, 43, 226));
-               FillRect(hdc, &cellRect, hBrush);
-               DeleteObject(hBrush);
-            }
-         }
-      }
-      //Отрисовка клеток конец
-
-      //сетка
-      for(int x = 0; x <= SCREEN_WIDTH; x += CELL_SIZE) {
-         MoveToEx(hdc, x, 0, NULL);
-         LineTo(hdc, x, SCREEN_HEIGHT);
-      }
-
-      for(int y = 0; y <= SCREEN_HEIGHT; y += CELL_SIZE) {
-         MoveToEx(hdc, 0, y, NULL);
-         LineTo(hdc, SCREEN_WIDTH, y);
-      }
-      //сетка конец
 
       SelectObject(hdc, hOldPen);
       DeleteObject(hPen);
-      //комент норм
-      // TextOut(hdc,
-      //    5, 5,
-      //    greeting, _tcslen(greeting));
-      //комент норм конец
 
       EndPaint(hWnd, &ps);
       break;
-   case WM_DESTROY:
-      PostQuitMessage(0);
+      case WM_DESTROY:
+         PostQuitMessage(0);
       break;
-   default:
-      return DefWindowProc(hWnd, message, wParam, lParam);
+      case WM_CLOSE:
+         g_state = END_PLS;
+      default:
+         return DefWindowProc(hWnd, message, wParam, lParam);
       break;
    }
 
-
-   free_grid(grid);
    return 0;
 }
