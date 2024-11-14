@@ -12,6 +12,9 @@
 int grid[GRID_X][GRID_Y] = {0};
 game_state g_state = INSERT_MODE;
 
+// PAINTSTRUCT ps;
+// HDC hdc;
+
 // The main window class name.
 static TCHAR szWindowClass[] = _T("DesktopApp");
 
@@ -97,28 +100,22 @@ int WINAPI WinMain(
    // hWnd: the value returned from CreateWindow
    // nCmdShow: the fourth parameter from WinMain
    ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
+   //UpdateWindow(hWnd);
 
-   // Main message loop:
+   //game loop
    MSG msg;
 
    while (g_state != END_PLS) {
 
-      //QueryPerformanceCounter((LARGE_INTEGER*)&frame_start);
+      game_input(&g_state, hWnd);
+      if (g_state == RUNNING_MODE) {
+         render(grid, hWnd);
+      }
+
       while (PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
          DispatchMessage(&msg);
          TranslateMessage(&msg);
       }
-
-      //ввод с клавиатуры, рендер игры
-      game_input(&g_state, hWnd);
-      printf("%d\n",23);
-      if (g_state == RUNNING_MODE) {
-         Sleep(500);
-         render(grid); //проблема в том, что сетка обновляется, а поле не выводится и обновляется только нажатием мышки
-         printf("%d\n",1);
-      }
-
    }
 
    return (int) msg.wParam;
@@ -134,39 +131,19 @@ int WINAPI WinMain(
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-   PAINTSTRUCT ps;
-   HDC hdc;
-   
-   switch (message) {
 
+   switch (message) {
       case WM_LBUTTONDOWN: {
-         // if (g_state != INSERT_MODE) {break;}
+         if (g_state != INSERT_MODE) {break;}
          int x = LOWORD(lParam) / CELL_SIZE;
          int y = HIWORD(lParam) / CELL_SIZE;
          if (x >= 0 && x < GRID_X && y >= 0 && y < GRID_Y) {
-            grid[x][y] = !grid[x][y]; //переключение состояния
+            grid[x][y] = !grid[x][y];
             InvalidateRect(hWnd, NULL, FALSE);
          }
       }
       case WM_PAINT: {
-         hdc = BeginPaint(hWnd, &ps);
-
-         HPEN hPen = CreatePen(PS_SOLID, 1, RGB(69, 69, 69));
-         HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
-
-         HBRUSH hBGBrush = CreateSolidBrush(RGB(0, 0, 0));
-         RECT clientRect;
-
-         GetClientRect(hWnd, &clientRect);
-         FillRect(hdc, &clientRect, hBGBrush);
-         DeleteObject(hBGBrush);
-
-         draw(grid, &hdc);
-
-         SelectObject(hdc, hOldPen);
-         DeleteObject(hPen);
-
-         EndPaint(hWnd, &ps);
+         draw(grid, &hWnd);
          break;
       }
       case WM_DESTROY: {

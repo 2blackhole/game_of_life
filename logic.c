@@ -4,7 +4,8 @@
 #include "logic.h"
 #include "constants.h"
 
-void render(int *grid) {
+void render(int *grid, HWND hwnd) {
+   Sleep(UPDATE_RATE_MS);
    int newGrid[GRID_X][GRID_Y];
 
    for (int y = 0; y < GRID_Y; ++y) {
@@ -39,37 +40,54 @@ void render(int *grid) {
          }
       }
    }
-
    for (int y = 0; y < GRID_Y; ++y) {
       for (int x = 0; x < GRID_X; ++x) {
          grid[y * GRID_X + x] = newGrid[y][x];
       }
    }
+   InvalidateRect(hwnd, NULL, FALSE);
 }
 
 
-void draw(const int * grid, const HDC * hdc) {
+void draw(const int * grid, HWND * hwnd) {
+   PAINTSTRUCT ps;
+   HDC hdc_l = BeginPaint(*hwnd, &ps);
+
+   HBRUSH hBGBrush = CreateSolidBrush(RGB(0, 0, 0));
+   RECT clientRect;
+
+   GetClientRect(*hwnd, &clientRect);
+   FillRect(hdc_l, &clientRect, hBGBrush);
+   DeleteObject(hBGBrush);
+
+
+
    for(int y = 0; y < GRID_X; y++) {
       for(int x = 0; x < GRID_Y; x++) {
          if (grid[x * GRID_Y + y]) {
             RECT cellRect = { x * CELL_SIZE, y * CELL_SIZE, (x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE };
             HBRUSH hBrush = CreateSolidBrush(RGB(138, 43, 226));
-            FillRect(*hdc, &cellRect, hBrush);
+            FillRect(hdc_l, &cellRect, hBrush);
             DeleteObject(hBrush);
          }
       }
    }
+   HPEN hPen = CreatePen(PS_SOLID, 1, RGB(69, 69, 69));
+   HPEN hOldPen = (HPEN)SelectObject(hdc_l, hPen);
 
 
    for(int x = 0; x <= SCREEN_WIDTH; x += CELL_SIZE) {
-      MoveToEx(*hdc, x, 0, NULL);
-      LineTo(*hdc, x, SCREEN_HEIGHT);
+      MoveToEx(hdc_l, x, 0, NULL);
+      LineTo(hdc_l, x, SCREEN_HEIGHT);
    }
 
    for(int y = 0; y <= SCREEN_HEIGHT; y += CELL_SIZE) {
-      MoveToEx(*hdc, 0, y, NULL);
-      LineTo(*hdc, SCREEN_WIDTH, y);
+      MoveToEx(hdc_l, 0, y, NULL);
+      LineTo(hdc_l, SCREEN_WIDTH, y);
    }
+   SelectObject(hdc_l, hOldPen);
+   DeleteObject(hPen);
+   EndPaint(*hwnd, &ps);
 }
 
 void game_input(game_state * g_state, HWND hwnd) {

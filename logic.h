@@ -13,8 +13,8 @@ typedef enum {
    RUNNING_MODE = 2
 } game_state;
 
-void render(int * grid);
+void render(int * grid, HWND hwnd);
 
-void draw(const int * grid, const HDC * hdc);
+void draw(const int * grid, HWND * hwnd);
 
 void game_input(game_state * g_state, HWND hwnd);
