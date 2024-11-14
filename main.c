@@ -11,9 +11,8 @@
 // Global variables
 int grid[GRID_X][GRID_Y] = {0};
 game_state g_state = INSERT_MODE;
-
-// PAINTSTRUCT ps;
-// HDC hdc;
+PAINTSTRUCT ps;
+HBRUSH hBrush;
 
 // The main window class name.
 static TCHAR szWindowClass[] = _T("DesktopApp");
@@ -59,20 +58,9 @@ int WINAPI WinMain(
       return 1;
    }
 
-   // Store instance handle in our global variable
+
    hInst = hInstance;
 
-   // The parameters to CreateWindowEx explained:
-   // WS_EX_OVERLAPPEDWINDOW : An optional extended window style.
-   // szWindowClass: the name of the application
-   // szTitle: the text that appears in the title bar
-   // WS_OVERLAPPEDWINDOW: the type of window to create
-   // CW_USEDEFAULT, CW_USEDEFAULT: initial position (x, y)
-   // 500, 100: initial size (width, length)
-   // NULL: the parent of this window
-   // NULL: this application does not have a menu bar
-   // hInstance: the first parameter from WinMain
-   // NULL: not used in this application
    HWND hWnd = CreateWindowEx(
       WS_EX_OVERLAPPEDWINDOW,
       szWindowClass,
@@ -96,11 +84,11 @@ int WINAPI WinMain(
       return 1;
    }
 
-   // The parameters to ShowWindow explained:
-   // hWnd: the value returned from CreateWindow
-   // nCmdShow: the fourth parameter from WinMain
+
    ShowWindow(hWnd, nCmdShow);
-   //UpdateWindow(hWnd);
+   UpdateWindow(hWnd);
+
+   hBrush = CreateSolidBrush(RGB(138, 43, 226));
 
    //game loop
    MSG msg;
@@ -115,23 +103,15 @@ int WINAPI WinMain(
       while (PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
          DispatchMessage(&msg);
          TranslateMessage(&msg);
+         Sleep(15);
       }
    }
 
    return (int) msg.wParam;
 }
 
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE:  Processes messages for the main window.
-//
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-
    switch (message) {
       case WM_LBUTTONDOWN: {
          if (g_state != INSERT_MODE) {break;}
@@ -143,7 +123,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
          }
       }
       case WM_PAINT: {
-         draw(grid, &hWnd);
+         draw(grid, &hWnd, &hBrush);
          break;
       }
       case WM_DESTROY: {

@@ -49,7 +49,7 @@ void render(int *grid, HWND hwnd) {
 }
 
 
-void draw(const int * grid, HWND * hwnd) {
+void draw(const int * grid, HWND * hwnd, HBRUSH * hBrush) {
    PAINTSTRUCT ps;
    HDC hdc_l = BeginPaint(*hwnd, &ps);
 
@@ -66,9 +66,7 @@ void draw(const int * grid, HWND * hwnd) {
       for(int x = 0; x < GRID_Y; x++) {
          if (grid[x * GRID_Y + y]) {
             RECT cellRect = { x * CELL_SIZE, y * CELL_SIZE, (x + 1) * CELL_SIZE, (y + 1) * CELL_SIZE };
-            HBRUSH hBrush = CreateSolidBrush(RGB(138, 43, 226));
-            FillRect(hdc_l, &cellRect, hBrush);
-            DeleteObject(hBrush);
+            FillRect(hdc_l, &cellRect, *hBrush);
          }
       }
    }

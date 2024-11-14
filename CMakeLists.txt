@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(game_of_life main.c
                             logic.h
                             constants.h
-                            logic.c)
+                            logic.c
+                            draw.h
+        draw.h)
 
 set(CMAKE_INCLUDE_CURRENT_DIR)

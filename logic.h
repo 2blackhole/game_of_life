@@ -15,6 +15,6 @@ typedef enum {
 
 void render(int * grid, HWND hwnd);
 
-void draw(const int * grid, HWND * hwnd);
+void draw(const int * grid, HWND * hwnd, HBRUSH * hBrush);
 
 void game_input(game_state * g_state, HWND hwnd);
