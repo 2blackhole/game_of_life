@@ -1,10 +1,9 @@
-
 #include <stdint.h>
 #include <windows.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <tchar.h>
+
 #include "logic.h"
 #include "constants.h"
 
@@ -107,20 +106,14 @@ int WINAPI WinMain(
       }
    }
 
-   return (int) msg.wParam;
+   return (int)msg.wParam;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
    switch (message) {
       case WM_LBUTTONDOWN: {
-         if (g_state != INSERT_MODE) {break;}
-         int x = LOWORD(lParam) / CELL_SIZE;
-         int y = HIWORD(lParam) / CELL_SIZE;
-         if (x >= 0 && x < GRID_X && y >= 0 && y < GRID_Y) {
-            grid[x][y] = !grid[x][y];
-            InvalidateRect(hWnd, NULL, FALSE);
-         }
+         leftButtonTrigger(grid, &hWnd, &lParam, &g_state);
       }
       case WM_PAINT: {
          draw(grid, &hWnd, &hBrush);
