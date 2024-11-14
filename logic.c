@@ -49,7 +49,7 @@ void render(int *grid, HWND hwnd) {
 }
 
 
-void draw(const int * grid, HWND * hwnd, HBRUSH * hBrush) {
+void draw(const int * grid, const HWND * hwnd, const HBRUSH * hBrush) {
    PAINTSTRUCT ps;
    HDC hdc_l = BeginPaint(*hwnd, &ps);
 
@@ -97,4 +97,14 @@ void game_input(game_state * g_state, HWND hwnd) {
       *g_state = INSERT_MODE;
    }
 
+}
+
+int leftButtonTrigger(int * grid, const HWND* hwnd, const LPARAM* lParam, game_state* g_state) {
+   if (*g_state != INSERT_MODE) {return NULL;}
+   int x = LOWORD(*lParam) / CELL_SIZE;
+   int y = HIWORD(*lParam) / CELL_SIZE;
+   if (x >= 0 && x < GRID_X && y >= 0 && y < GRID_Y) {
+      grid[y + x*GRID_X] = !grid[y + x*GRID_X];
+      InvalidateRect(*hwnd, NULL, FALSE);
+   }
 }
