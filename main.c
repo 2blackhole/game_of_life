@@ -102,7 +102,6 @@ int WINAPI WinMain(
       while (PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
          DispatchMessage(&msg);
          TranslateMessage(&msg);
-         Sleep(15);
       }
    }
 
